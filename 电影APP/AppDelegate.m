@@ -7,18 +7,67 @@
 //
 
 #import "AppDelegate.h"
-
+#import "MainTabBarController.h"
+#import "FirstenterViewController.h"
+#import "XLSCollectionViewController.h"
+#import "DongHuaViewController.h"
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
-
+-(void)dealloc
+{
+    [_window release];
+    _window=nil;
+    [super dealloc];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+//    self.window.rootViewController=[[UINavigationController alloc]initWithRootViewController:[[DongHuaViewController alloc]init]];
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everLaunched"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+    }
+    
+    else{
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstLaunch"];
+    }
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
+        // 这里判断是否第一次
+        UIAlertView *alert=[[UIAlertView alloc] initWithTitle:@"第一次"
+                                                      message:@"欢迎来到影院"
+                                                     delegate:self
+                                            cancelButtonTitle:@"我知道了"
+                                            otherButtonTitles:nil];
+        [alert show];
+        _window=[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+        _window.backgroundColor=[UIColor whiteColor];
+        [_window makeKeyAndVisible];
+        //标签栏边白色
+        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent ];
+        self.window.rootViewController=[[UINavigationController alloc]initWithRootViewController:[[FirstenterViewController alloc]init]];
+
+               [alert show];
+        
+        [self.window.rootViewController release];
+    }
+    else
+    {
+        _window=[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+        _window.backgroundColor=[UIColor whiteColor];
+        [_window makeKeyAndVisible];
+        //标签栏边白色
+        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent ];
+        //创建标签视图控制器
+        MainTabBarController *mainTbc=[[MainTabBarController alloc]init];
+        _window.rootViewController=mainTbc;
+        [mainTbc release];
+
+    }
     return YES;
 }
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
